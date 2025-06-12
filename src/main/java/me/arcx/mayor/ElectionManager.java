@@ -1,4 +1,4 @@
-package me.arcx.mayor.election;
+package me.arcx.mayor;
 
 import me.arcx.mayor.gui.MayorGUI;
 import org.bukkit.entity.Player;
