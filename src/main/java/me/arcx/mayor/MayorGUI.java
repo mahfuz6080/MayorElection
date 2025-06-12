@@ -3,7 +3,6 @@ package me.arcx.mayor.gui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -29,20 +28,9 @@ public class MayorGUI {
             meta.setLore(List.of("§7Click to vote for", "§b" + name));
             item.setItemMeta(meta);
 
-            gui.setItem(1 + i * 2, item); // Space them out: slot 1, 3, 5, etc.
+            gui.setItem(1 + i * 2, item); // Spread out: 1, 3, 5, 7, 9
         }
 
         player.openInventory(gui);
-    }
-
-    public void handleClick(Player player, InventoryClickEvent event) {
-        event.setCancelled(true);
-        ItemStack item = event.getCurrentItem();
-        if (item == null || !item.hasItemMeta()) return;
-
-        String selected = item.getItemMeta().getDisplayName().replace("§e", "");
-        player.sendMessage("§aYou voted for §b" + selected + "§a!");
-        player.closeInventory();
-        // Save vote or trigger vote logic here
     }
 }
