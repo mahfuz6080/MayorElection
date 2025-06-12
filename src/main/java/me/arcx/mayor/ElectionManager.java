@@ -1,6 +1,6 @@
 package me.arcx.mayor;
 
-import me.arcx.mayor.gui.MayorGUI;
+import me.arcx.mayor.MayorGUI;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
