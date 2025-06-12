@@ -1,53 +1,48 @@
-package me.arcx.mayor;
+package me.arcx.mayor.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.SkullType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
 public class MayorGUI {
 
-    private final ElectionManager manager;
+    private final List<String> mayors;
 
-    public MayorGUI(ElectionManager manager) {
-        this.manager = manager;
+    public MayorGUI(List<String> mayors) {
+        this.mayors = mayors;
     }
 
     public void open(Player player) {
-        Inventory inv = Bukkit.createInventory(null, 27, "§aVote for Mayor");
-        List<Mayor> mayors = manager.getMayors();
+        Inventory gui = Bukkit.createInventory(null, 9, "§6§lMayor Election");
 
-        for (int i = 0; i < mayors.size(); i++) {
-            Mayor mayor = mayors.get(i);
-            ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
-            ItemMeta meta = skull.getItemMeta();
-            meta.setDisplayName("§6" + mayor.name);
-            meta.setLore(mayor.perks.stream().map(p -> "§7" + p).toList());
-            skull.setItemMeta(meta);
-            inv.setItem(11 + i, skull);
+        for (int i = 0; i < mayors.size() && i < 5; i++) {
+            String name = mayors.get(i);
+            ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName("§e" + name);
+            meta.setLore(List.of("§7Click to vote for", "§b" + name));
+            item.setItemMeta(meta);
+
+            gui.setItem(1 + i * 2, item); // Space them out: slot 1, 3, 5, etc.
         }
 
-        player.openInventory(inv);
+        player.openInventory(gui);
     }
 
-    public void onClick(Player player, InventoryClickEvent e) {
-        if (!e.getView().getTitle().equals("§aVote for Mayor")) return;
-        e.setCancelled(true);
+    public void handleClick(Player player, InventoryClickEvent event) {
+        event.setCancelled(true);
+        ItemStack item = event.getCurrentItem();
+        if (item == null || !item.hasItemMeta()) return;
 
-        if (e.getCurrentItem() == null || !e.getCurrentItem().hasItemMeta()) return;
-
-        String name = e.getCurrentItem().getItemMeta().getDisplayName().replace("§6", "");
-        Mayor selected = manager.getMayors().stream()
-            .filter(m -> m.name.equals(name)).findFirst().orElse(null);
-
-        if (selected != null) {
-            manager.vote(player.getName(), selected);
-            player.sendMessage("§aYou voted for §6" + selected.name);
-            player.closeInventory();
-        }
+        String selected = item.getItemMeta().getDisplayName().replace("§e", "");
+        player.sendMessage("§aYou voted for §b" + selected + "§a!");
+        player.closeInventory();
+        // Save vote or trigger vote logic here
     }
 }
