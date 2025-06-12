@@ -1,66 +1,49 @@
-package me.arcx.mayor;
+package me.arcx.mayor.election;
 
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.trait.SkinTrait;
+import me.arcx.mayor.npc.MayorNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
 public class ElectionManager {
-    private final List<Mayor> selectedMayors = new ArrayList<>();
-    private final Map<String, Integer> votes = new HashMap<>();
-    private final Map<Mayor, NPC> npcMap = new HashMap<>();
 
-    private final List<Location> spawnLocations = Arrays.asList(
-        new Location(Bukkit.getWorld("world"), -12, 70, -42),
-        new Location(Bukkit.getWorld("world"), -14, 70, -45),
-        new Location(Bukkit.getWorld("world"), -10, 70, -45),
-        new Location(Bukkit.getWorld("world"), -8, 70, -42),
-        new Location(Bukkit.getWorld("world"), -6, 70, -44)
-    );
+    private final JavaPlugin plugin;
+    private final List<String> allMayors;
 
-    public void startElection(List<Mayor> allMayors) {
-        Collections.shuffle(allMayors);
-        selectedMayors.clear();
-        selectedMayors.addAll(allMayors.subList(0, 5));
-
-        spawnNPCs();
+    public ElectionManager(JavaPlugin plugin) {
+        this.plugin = plugin;
+        FileConfiguration config = plugin.getConfig();
+        this.allMayors = config.getStringList("mayors");
     }
 
-    private void spawnNPCs() {
+    public List<String> getRandomMayors(int count) {
+        List<String> copy = new ArrayList<>(allMayors);
+        Collections.shuffle(copy);
+        return copy.subList(0, Math.min(count, copy.size()));
+    }
+
+    public void spawnMayors(Player viewer) {
+        List<String> selectedMayors = getRandomMayors(5);
+
+        List<Location> locations = Arrays.asList(
+                new Location(Bukkit.getWorld("world"), -36.5, 71, -44.5),
+                new Location(Bukkit.getWorld("world"), -34.5, 71, -44.5),
+                new Location(Bukkit.getWorld("world"), -32.5, 71, -44.5),
+                new Location(Bukkit.getWorld("world"), -30.5, 71, -44.5),
+                new Location(Bukkit.getWorld("world"), -28.5, 71, -44.5)
+        );
+
         for (int i = 0; i < selectedMayors.size(); i++) {
-            Mayor mayor = selectedMayors.get(i);
-            Location loc = spawnLocations.get(i);
-            NPC npc = CitizensAPI.getNPCRegistry().createNPC(org.bukkit.entity.EntityType.PLAYER, mayor.name);
-            npc.spawn(loc);
-            npc.setName("§6Mayor " + mayor.name);
-            SkinTrait skin = npc.getOrAddTrait(SkinTrait.class);
-            skin.setSkinName(mayor.skin);
-            npcMap.put(mayor, npc);
+            String name = selectedMayors.get(i);
+            Location loc = locations.get(i);
+            MayorNPC npc = new MayorNPC(name, loc.getX(), loc.getY(), loc.getZ(), 0f, 0f);
+            npc.spawn(viewer);
         }
-    }
 
-    public List<Mayor> getMayors() {
-        return selectedMayors;
-    }
-
-    public void vote(String player, Mayor mayor) {
-        votes.put(player, selectedMayors.indexOf(mayor));
-    }
-
-    public Mayor getWinner() {
-        int[] counts = new int[selectedMayors.size()];
-        for (int i : votes.values()) counts[i]++;
-        int max = 0, index = 0;
-        for (int i = 0; i < counts.length; i++) {
-            if (counts[i] > max) {
-                max = counts[i];
-                index = i;
-            }
-        }
-        return selectedMayors.get(index);
+        viewer.sendMessage("Spawned 5 random mayors.");
     }
 }
