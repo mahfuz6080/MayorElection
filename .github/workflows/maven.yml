@@ -36,7 +36,7 @@ jobs:
         mv target/*.jar build/MayorElection.jar
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: MayorElection
         path: build/MayorElection.jar
