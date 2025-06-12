@@ -1,0 +1,98 @@
+mayors:
+  Aatrox:
+    skin: "Aatrox"
+    perks:
+      - "-25% Slayer Quest Cost"
+      - "+50% Slayer XP"
+      - "2x Slayer Boss Spawns"
+
+  Barry:
+    skin: "Barry"
+    perks:
+      - "+15% Magic Wisdom"
+      - "Buffs All Abilities"
+      - "Wizard Portal Progress"
+
+  Cole:
+    skin: "Cole"
+    perks:
+      - "2x Mining XP"
+      - "Mining Fiesta Event"
+      - "Mining Minions work 25% faster"
+
+  Derpy:
+    skin: "Derpy"
+    perks:
+      - "+50% Skill XP"
+      - "+2x HP for Mobs"
+      - "Disables Bazaar and Auction House"
+
+  Diana:
+    skin: "Diana"
+    perks:
+      - "+25% Pet XP"
+      - "Mythological Ritual Event"
+      - "Mythical Creatures Spawn"
+
+  Diaz:
+    skin: "Diaz"
+    perks:
+      - "+25% Bank Interest"
+      - "+10% Coin Shop Discounts"
+      - "+10% Daily Bits"
+
+  Finnegan:
+    skin: "Finnegan"
+    perks:
+      - "+20% Farming XP"
+      - "Farming Contest Perk"
+      - "Farming Island Boosts"
+
+  Foxy:
+    skin: "Foxy"
+    perks:
+      - "+2 Special Events per Year"
+      - "+20% Event Rewards"
+      - "Events last 50% longer"
+
+  Jerry:
+    skin: "Jerry"
+    perks:
+      - "All Perks are 50% effective"
+      - "Everything is Chaos"
+      - "Mayhem in the SkyBlock Universe"
+
+  Marina:
+    skin: "Marina"
+    perks:
+      - "+15% Fishing XP"
+      - "Fishing Festival"
+      - "Sea Creatures +25% chance"
+
+  Paul:
+    skin: "Paul"
+    perks:
+      - "+10 Dungeon Score"
+      - "-20% Dungeon Chest Cost"
+      - "+25% More Dungeon Rewards"
+
+  Scorpius:
+    skin: "Scorpius"
+    perks:
+      - "Bribes Players"
+      - "+50% Dark Auction Items"
+      - "Rare Items for Sale"
+
+  Technoblade:
+    skin: "Technoblade"
+    perks:
+      - "+50% Speed"
+      - "+100% Potato Minion Output"
+      - "Great Potato War Champion"
+
+  Barry_2:
+    skin: "Barry"
+    perks:
+      - "He still does... magic stuff."
+      - "Unpredictable Effects"
+      - "?????"
