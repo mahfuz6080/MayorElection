@@ -1,33 +1,33 @@
 package me.arcx.mayor;
 
 import me.arcx.mayor.election.ElectionManager;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import me.arcx.mayor.gui.InventoryListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MayorElection extends JavaPlugin {
 
+    private static MayorElection instance;
     private ElectionManager electionManager;
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
+        instance = this;
         this.electionManager = new ElectionManager(this);
 
-        getCommand("spawnmayors").setExecutor((sender, command, label, args) -> {
-            if (sender instanceof Player) {
-                electionManager.spawnMayors((Player) sender);
-                return true;
+        getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+        getCommand("mayorvote").setExecutor((sender, command, label, args) -> {
+            if (sender instanceof org.bukkit.entity.Player player) {
+                electionManager.openMayorGUI(player);
             }
-            sender.sendMessage("This command is for players only.");
-            return false;
+            return true;
         });
-
-        getLogger().info("[MayorElection] Enabled successfully.");
     }
 
-    @Override
-    public void onDisable() {
-        getLogger().info("[MayorElection] Disabled.");
+    public static MayorElection getInstance() {
+        return instance;
+    }
+
+    public ElectionManager getElectionManager() {
+        return electionManager;
     }
 }
