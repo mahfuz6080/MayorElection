@@ -1,4 +1,4 @@
-name: Build and Release MayorElection
+name: Java CI with Maven
 
 on:
   push:
@@ -7,12 +7,15 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout Repository
       uses: actions/checkout@v3
 
     - name: Set up Java 8
@@ -21,26 +24,26 @@ jobs:
         java-version: 8
         distribution: temurin
 
-    - name: Cache Maven packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-maven-
+    - name: Install Citizens to Local Maven Repo
+      run: mvn install:install-file -Dfile=libs/citizens-2.0.16.jar -DgroupId=net.citizensnpcs -DartifactId=citizens -Dversion=2.0.16 -Dpackaging=jar
 
     - name: Build with Maven
-      run: mvn clean package
+      run: mvn -B package --file pom.xml
 
     - name: Rename JAR
       run: |
-        mkdir -p output
-        mv target/*.jar output/MayorElection-1.0.jar
+        mkdir build
+        mv target/*.jar build/MayorElection.jar
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: MayorElection
+        path: build/MayorElection.jar
 
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: v1.0
-        name: MayorElection v1.0
-        files: output/MayorElection-1.0.jar
+        files: build/MayorElection.jar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
