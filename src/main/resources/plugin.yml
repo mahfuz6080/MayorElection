@@ -1,0 +1,9 @@
+name: MayorElection
+version: 1.0
+main: me.arcx.mayor.MayorElection
+api-version: 1.8
+depend: [Citizens]
+commands:
+  election:
+    description: Open mayor election menu
+    usage: /election
