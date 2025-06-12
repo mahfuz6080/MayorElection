@@ -1,4 +1,4 @@
-package me.arcx.mayor.gui;
+package me.arcx.mayor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
