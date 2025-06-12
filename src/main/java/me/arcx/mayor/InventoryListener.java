@@ -1,33 +1,34 @@
-package me.arcx.mayor.gui;
+package me.arcx.mayor;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 
 public class InventoryListener implements Listener {
 
+    private final ElectionManager electionManager;
+
+    public InventoryListener(ElectionManager electionManager) {
+        this.electionManager = electionManager;
+    }
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (!(event.getWhoClicked() instanceof Player)) return;
 
-        Inventory inventory = event.getInventory();
-        if (inventory == null || !event.getView().getTitle().equals("§6§lMayor Election")) return;
+        Player player = (Player) event.getWhoClicked();
 
-        event.setCancelled(true); // Prevent item movement
+        if (event.getView().getTitle().equals("§6Mayor Election")) {
+            event.setCancelled(true);
 
-        ItemStack clicked = event.getCurrentItem();
-        if (clicked == null || !clicked.hasItemMeta()) return;
+            if (event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta()) return;
 
-        String displayName = clicked.getItemMeta().getDisplayName();
-        if (displayName == null || !displayName.startsWith("§e")) return;
-
-        String mayorName = displayName.replace("§e", "");
-        player.sendMessage("§aYou voted for §b" + mayorName + "§a!");
-        player.closeInventory();
-
-        // Optional: Save vote to config
+            String name = event.getCurrentItem().getItemMeta().getDisplayName().replace("§aVote for ", "");
+            electionManager.setVote(player.getUniqueId(), name);
+            player.sendMessage("§aYou voted for §e" + name);
+            player.closeInventory();
+        }
     }
 }
