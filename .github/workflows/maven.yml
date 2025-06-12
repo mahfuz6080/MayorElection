@@ -15,35 +15,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
     - name: Set up Java 8
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
-        java-version: 8
-        distribution: temurin
+        distribution: 'temurin'
+        java-version: '8'
 
-    - name: Install Citizens to Local Maven Repo
-      run: mvn install:install-file -Dfile=libs/citizens-2.0.16.jar -DgroupId=net.citizensnpcs -DartifactId=citizens -Dversion=2.0.16 -Dpackaging=jar
+    - name: Cache Maven packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-maven
 
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn clean package -DskipTests
 
-    - name: Rename JAR
+    - name: Extract version from POM
+      id: version
       run: |
-        mkdir build
-        mv target/*.jar build/MayorElection.jar
-
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: MayorElection
-        path: build/MayorElection.jar
+        VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
 
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
-        files: build/MayorElection.jar
+        name: "MayorElection v${{ steps.version.outputs.version }}"
+        tag_name: "v${{ steps.version.outputs.version }}"
+        files: target/*.jar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
